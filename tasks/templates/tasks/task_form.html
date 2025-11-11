@@ -1,0 +1,83 @@
+{% extends 'tasks/base.html' %}
+{% block title %}{{ title }} - To-Do{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+  <div class="relative rounded-2xl p-8 border border-white/10 bg-gradient-to-br from-[#191537]/90 via-[#1c1550]/80 to-[#22175a]/80 shadow-[0_0_35px_rgba(124,58,237,0.2)] backdrop-blur-md transition-all hover:shadow-[0_0_45px_rgba(124,58,237,0.35)]">
+    
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-xl font-semibold text-gray-100 tracking-wide">{{ title }}</h2>
+      <a href="{% url 'tasks:list' %}" class="text-indigo-300 hover:text-indigo-100 transition-all">Back</a>
+    </div>
+
+    <!-- Form -->
+    <form method="post" novalidate class="space-y-6">
+      {% csrf_token %}
+
+      <!-- Title -->
+      <div>
+        <label class="block text-sm text-indigo-100/90 mb-2">{{ form.title.label }}</label>
+        <input
+          type="text"
+          name="{{ form.title.name }}"
+          value="{{ form.title.value|default_if_none:'' }}"
+          class="w-full rounded-lg bg-[#2a1f63]/80 border border-white/10 text-gray-100 placeholder-gray-400 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-violet-500/60 focus:border-violet-500 transition-all duration-200 shadow-inner"
+          placeholder="Enter task title..."
+        />
+        {% for e in form.title.errors %}
+          <div class="text-rose-400 text-sm mt-1">{{ e }}</div>
+        {% endfor %}
+      </div>
+
+      <!-- Description -->
+      <div>
+        <label class="block text-sm text-indigo-100/90 mb-2">{{ form.description.label }}</label>
+        <textarea
+          name="{{ form.description.name }}"
+          class="w-full rounded-lg bg-[#2a1f63]/80 border border-white/10 text-gray-100 placeholder-gray-400 px-4 py-3 h-32 focus:outline-none focus:ring-2 focus:ring-violet-500/60 focus:border-violet-500 transition-all duration-200 shadow-inner"
+          placeholder="Add some details..."
+        >{{ form.description.value|default_if_none:'' }}</textarea>
+        {% for e in form.description.errors %}
+          <div class="text-rose-400 text-sm mt-1">{{ e }}</div>
+        {% endfor %}
+      </div>
+
+      <!-- Completed -->
+      <div class="flex items-center gap-3">
+        <input
+          type="checkbox"
+          name="{{ form.completed.name }}"
+          id="id_completed"
+          {% if form.completed.value %}checked{% endif %}
+          class="w-5 h-5 accent-indigo-500 rounded bg-[#2a1f63]/80 border border-white/10 focus:ring-indigo-400 transition-all"
+        />
+        <label for="id_completed" class="text-sm text-indigo-100/80 select-none">{{ form.completed.label }}</label>
+      </div>
+
+      <!-- Buttons -->
+      <div class="flex gap-4 pt-2">
+        <button
+          type="submit"
+          class="relative px-6 py-2.5 rounded-lg bg-gradient-to-br from-violet-500 via-purple-600 to-indigo-600 text-white font-medium shadow-lg hover:shadow-[0_0_25px_rgba(139,92,246,0.6)] hover:scale-[1.05] transition-transform duration-200 ease-out"
+        >
+          Save
+        </button>
+
+        <a
+          href="{% url 'tasks:list' %}"
+          class="px-6 py-2.5 rounded-lg border border-white/10 text-indigo-200 hover:bg-white/5 hover:text-white hover:scale-[1.03] transition-all"
+        >
+          Cancel
+        </a>
+      </div>
+
+      {% if form.non_field_errors %}
+        <div class="text-rose-400 text-sm mt-2">
+          {% for e in form.non_field_errors %}{{ e }}{% endfor %}
+        </div>
+      {% endif %}
+    </form>
+  </div>
+</div>
+{% endblock %}
